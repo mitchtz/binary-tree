@@ -4,7 +4,50 @@ class tree:
 		self.node_num = 0
 
 	#Insert new node, takes in value and node to start at, starts at root be default.
-	def insert(self, value, check_node=0):
+	def insert(self, value):#, check_node=0):
+		#Set first node to check to root
+		check_node = 0
+		#For while loop, determines if loop is done
+		done = False
+		#Loop through and check each node, then checnge check node and restart loop
+		while(not done):
+			#First node being inserted
+			if self.node_num == 0:
+				#Create root node
+				self.node_list.append(node(value, None, None, None))
+				#Increment the node num
+				self.node_num = self.node_num + 1
+				return True
+			#Get value for current node, if value is less than the current node, recursively call left
+			if value < self.node_list[check_node].get_value():
+				#Check if left child exists, if not, create child
+				if self.node_list[check_node].get_l_child() == None:
+					#Create node
+					self.node_list.append(node(value, check_node, None, None))
+					#Update parent
+					self.node_list[check_node].set_l_child(self.node_num)
+					#Increment the node num
+					self.node_num = self.node_num + 1
+					return True
+				else:
+					#Set check node to left child
+					check_node = self.node_list[check_node].get_l_child()
+			#Else value is greater or equal and should go to right and be called again
+			else:
+				#Check if right child exists, if not, create child
+				if self.node_list[check_node].get_r_child() == None:
+					#Create node
+					self.node_list.append(node(value, check_node, None, None))
+					#Update parent
+					self.node_list[check_node].set_r_child(self.node_num)
+					#Increment the node num
+					self.node_num = self.node_num + 1
+					return True
+				else:
+					#Set check node to right child
+					check_node = self.node_list[check_node].get_r_child()
+		'''
+		####Old recursize code####
 		#First node being inserted
 		if self.node_num == 0:
 			#Create root node
@@ -40,9 +83,38 @@ class tree:
 			else:
 				#Call again with left child as check_node
 				return self.insert(value, self.node_list[check_node].get_r_child())
+		'''
 	#Finds the value in a tree, return True if found, Flase otherwise
 	#Takes in value to find, and node to start checking at, which is 0 by default
-	def find(self, value, check_node=0):
+	def find(self, value):#, check_node=0):
+		#Set first node to check as root
+		check_node = 0
+		#For while loop, determines if loop is done
+		done = False
+		#Loop through and check each node, then checnge check node and restart loop
+		while(not done):
+			#Check to see if the current node is the correct one
+			if self.node_list[check_node].get_value() == value:
+				return True
+			#otherwise, check if value is less than current node. If so, call find with the left child
+			elif value < self.node_list[check_node].get_value():
+				#Check if left node exists, if not, return False
+				if self.node_list[check_node].get_l_child() == None:
+					return False
+				#Else change check node to left child
+				else:
+					check_node = self.node_list[check_node].get_l_child()
+			#Else value is greater or equal to current node, then check right node
+			else:
+				#Check if right node exists, if not, return False
+				if self.node_list[check_node].get_r_child() == None:
+					return False
+				#Else change check node to right child
+				else:
+					check_node = self.node_list[check_node].get_r_child()
+
+		'''
+		####Old recursive problem####
 		#Check to see if the current node is the correct one
 		if self.node_list[check_node].get_value() == value:
 			return True
@@ -62,6 +134,7 @@ class tree:
 			#Else call find on left node
 			else:
 				return self.find(value, self.node_list[check_node].get_r_child())
+		'''
 
 	#Prints all nodes in the tree in order of being added
 	def print_all(self):
@@ -76,6 +149,8 @@ class tree:
 	'''
 	TODO:
 	delete function
+		Find smallest value on the right side of the tree (starting at value to remove), replace node with that
+	find_min function (finds min value in tree starting at node passed in, returns index of the smallest node)
 	tree height function (possibly)
 	tree width function (possibly)
 	Make functions iterative instead of recursive (possibly)
